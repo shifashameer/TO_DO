@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Todo List</title>
+    <script src="/static/theme.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="theme-toolbar">
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Dark mode" aria-pressed="false" hidden>Switch to dark</button>
+    </div>
+
+<div class="container">
+
+    <h1>Todo List</h1>
+
+    <form action="/logout" method="POST"><button type="submit">Log out</button></form>
+    <form class="controls" method="GET" action="/">
+        <label for="status">Status</label>
+        <select id="status" name="status"><option value="all">All</option><option value="active">Active</option><option value="completed">Completed</option></select>
+        <label for="sort">Sort by</label>
+        <select id="sort" name="sort"><option value="created_at">Created date</option><option value="title">Title</option></select>
+        <label for="order">Order</label>
+        <select id="order" name="order"><option value="asc">Ascending</option><option value="desc">Descending</option></select>
+        <button type="submit">Apply</button>
+    </form>
+
+    <!-- Add Todo -->
+    <div class="add-form">
+
+        <h3>Add a Todo</h3>
+
+        <form action="/todos" method="POST">
+
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" name="title" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text" name="description">
+            </div>
+
+            <button type="submit">Add Todo</button>
+
+        </form>
+
+    </div>
+
+
+    <!-- Todo List -->
+    {{range .}}
+
+    <div class="todo-card">
+
+        <h2>{{.Title}}</h2>
+
+        <p class="description">
+            {{.Description}}
+        </p>
+
+        <div class="todo-actions">
+
+            <label class="complete-label">
+                <input
+                    type="checkbox"
+                    onchange="toggleTodo('{{.ID}}')"
+                    {{if .Completed}}checked{{end}}
+                >
+                Completed
+            </label>
+
+            <a
+                class="edit-link"
+                href="/todos/{{.ID}}/edit"
+            >
+                Edit
+            </a>
+
+            <button
+                class="delete-button"
+                onclick="deleteTodo('{{.ID}}')"
+            >
+                Delete
+            </button>
+
+        </div>
+
+    </div>
+
+    {{end}}
+
+</div>
+
+
+<script>
+const params = new URLSearchParams(location.search);
+for (const name of ["status", "sort", "order"]) {
+    if (params.has(name)) document.getElementById(name).value = params.get(name);
+}
+
+
+function toggleTodo(id) {
+
+    fetch("/api/todos/" + id + "/toggle", {
+        method: "PATCH"
+    }).then(response => {
+        if (!response.ok) throw new Error("Request failed. Please refresh and try again.");
+        location.reload();
+    }).catch(error => { alert(error.message); });
+
+}
+
+function deleteTodo(id) {
+
+    fetch("/api/todos/" + id, {
+        method: "DELETE"
+    }).then(response => {
+        if (!response.ok) throw new Error("Request failed. Please refresh and try again.");
+        location.reload();
+    }).catch(error => { alert(error.message); });
+
+}
+
+</script>
+
+</body>
+</html>
+

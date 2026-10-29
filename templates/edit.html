@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Todo</title>
+    <script src="/static/theme.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="theme-toolbar">
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Dark mode" aria-pressed="false" hidden>Switch to dark</button>
+    </div>
+
+<div class="edit-container">
+
+    <a href="/" class="back-link">← Back to Todo List</a>
+
+    <div class="edit-card">
+
+        <h1>Edit Todo</h1>
+
+        <form action="/todos/{{.ID}}" method="POST">
+
+            <div class="form-group">
+                <label>Title</label>
+
+                <input
+                    type="text"
+                    name="title"
+                    value="{{.Title}}"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+
+                <input
+                    type="text"
+                    name="description"
+                    value="{{.Description}}"
+                >
+            </div>
+
+            <button type="submit">Save Changes</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+
